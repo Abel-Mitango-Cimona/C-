@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — VELOUR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/Produto" class="nav-link">Coleção</a>
+            <a href="/Carrinho" class="nav-link">Carrinho <span class="cart-count" id="cartCount">0</span></a>
+        </div>
+        <a href="/" class="brand">VELOUR</a>
+        <div class="nav-right">
+            <a href="/Produto/Create" class="nav-link nav-cta">+ Novo Produto</a>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="footer-brand">VELOUR</div>
+        <p>© @DateTime.Now.Year — Moda com propósito</p>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

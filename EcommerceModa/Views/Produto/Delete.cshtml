@@ -1,0 +1,25 @@
+@model EcommerceModa.Models.Produto
+@{
+    ViewData["Title"] = "Excluir Produto";
+}
+
+<div class="confirm-page">
+    <div class="confirm-icon">🗑️</div>
+    <h1 class="confirm-title">Excluir produto?</h1>
+    <p class="confirm-text">Esta ação não pode ser desfeita. O produto será removido permanentemente do sistema.</p>
+
+    <div class="confirm-product">
+        <p class="product-category" style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 0.25rem;">@Model.Categoria</p>
+        <strong>@Model.Nome</strong>
+        <p style="color: var(--gold); margin-top: 0.25rem;">R$ @Model.Preco.ToString("N2")</p>
+    </div>
+
+    <div class="confirm-actions">
+        <form asp-action="Delete" method="post" style="display: inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Sim, excluir</button>
+        </form>
+        <a href="/Produto" class="btn btn-outline">Cancelar</a>
+    </div>
+</div>

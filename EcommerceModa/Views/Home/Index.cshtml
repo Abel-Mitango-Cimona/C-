@@ -1,0 +1,54 @@
+@model IEnumerable<EcommerceModa.Models.Produto>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero">
+    <div class="hero-content">
+        <p class="hero-tag">Nova Coleção 2025</p>
+        <h1 class="hero-title">
+            Moda que<br>
+            <em>faz sentido</em>
+        </h1>
+        <p class="hero-subtitle">
+            Peças cuidadosamente selecionadas para compor looks únicos, 
+            com a elegância que você merece.
+        </p>
+        <a href="/Produto" class="btn btn-primary">Ver Coleção</a>
+    </div>
+    <div class="hero-visual">
+        <div class="hero-pattern">
+            <span class="hero-icon">✦</span>
+        </div>
+    </div>
+</section>
+
+@if (Model.Any())
+{
+    <section class="products-section">
+        <div class="section-header" style="text-align:left; padding: 3rem 0 2rem;">
+            <span class="section-tag">Recém chegados</span>
+            <h2 class="section-title">Novidades</h2>
+        </div>
+
+        <div class="products-grid">
+            @foreach (var produto in Model)
+            {
+                <div class="product-card">
+                    <div class="product-image">
+                        <span class="product-image-icon">👗</span>
+                        <span class="product-badge">Novo</span>
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">@produto.Categoria</p>
+                        <h3 class="product-name">@produto.Nome</h3>
+                        <p class="product-price">R$ @produto.Preco.ToString("N2")</p>
+                        <div class="product-actions">
+                            <a href="/Produto/Details/@produto.Id" class="btn btn-outline btn-sm">Ver</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}

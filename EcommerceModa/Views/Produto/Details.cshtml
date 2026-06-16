@@ -1,0 +1,90 @@
+@model EcommerceModa.Models.Produto
+@{
+    ViewData["Title"] = Model.Nome;
+}
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-error" style="margin: 1rem 3rem 0;">@TempData["Erro"]</div>
+}
+
+<div class="product-detail">
+    <div class="product-detail-image">
+        @switch (Model.Categoria)
+        {
+            case "Vestidos": <text>👗</text> break;
+            case "Blusas": <text>👚</text> break;
+            case "Calças": <text>👖</text> break;
+            case "Saias": <text>🩱</text> break;
+            case "Casacos": <text>🧥</text> break;
+            case "Acessórios": <text>👜</text> break;
+            case "Calçados": <text>👠</text> break;
+            case "Moda Praia": <text>👙</text> break;
+            default: <text>✦</text> break;
+        }
+    </div>
+
+    <div class="product-detail-info">
+        <a href="/Produto" class="nav-link" style="font-size: 11px; margin-bottom: 2rem; display: inline-block;">← Voltar à coleção</a>
+        
+        <p class="detail-category">@Model.Categoria</p>
+        <h1 class="detail-name">@Model.Nome</h1>
+        <p class="detail-price">R$ @Model.Preco.ToString("N2")</p>
+
+        @if (!string.IsNullOrEmpty(Model.Descricao))
+        {
+            <p class="detail-description">@Model.Descricao</p>
+        }
+
+        <p class="detail-stock">
+            @if (Model.Estoque == 0)
+            {
+                <span style="color: var(--danger);">● Fora de estoque</span>
+            }
+            else if (Model.Estoque <= 5)
+            {
+                <span style="color: #e67e22;">● Últimas @Model.Estoque peça(s) disponíveis</span>
+            }
+            else
+            {
+                <span style="color: var(--success);">● @Model.Estoque peças em estoque</span>
+            }
+        </p>
+
+        <div class="detail-actions">
+            @if (Model.Estoque > 0)
+            {
+                <form asp-controller="Carrinho" asp-action="Adicionar" method="post" style="display: inline-flex; gap: 0.75rem; align-items: center;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="produtoId" value="@Model.Id" />
+                    <input type="number" name="quantidade" value="1" min="1" max="@Model.Estoque"
+                           class="form-control" style="width: 80px;" />
+                    <button type="submit" class="btn btn-gold">Adicionar ao Carrinho</button>
+                </form>
+            }
+            <a href="/Produto/Edit/@Model.Id" class="btn btn-outline">Editar</a>
+            <a href="/Produto/Delete/@Model.Id" class="btn btn-danger">Excluir</a>
+        </div>
+
+        <div class="detail-meta">
+            @if (!string.IsNullOrEmpty(Model.Cor))
+            {
+                <div class="detail-meta-item">
+                    <strong>Cor</strong>
+                    @Model.Cor
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Tamanhos))
+            {
+                <div class="detail-meta-item">
+                    <strong>Tamanhos</strong>
+                    @Model.Tamanhos
+                </div>
+            }
+            <div class="detail-meta-item">
+                <strong>Cadastrado em</strong>
+                @Model.DataCadastro.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+    </div>
+</div>

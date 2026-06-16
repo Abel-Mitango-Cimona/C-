@@ -1,0 +1,111 @@
+@model EcommerceModa.Models.Carrinho
+@{
+    ViewData["Title"] = "Carrinho";
+}
+
+<div class="cart-page">
+    <h1 class="cart-title">Seu Carrinho</h1>
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success">@TempData["Sucesso"]</div>
+    }
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-error">@TempData["Erro"]</div>
+    }
+
+    @if (!Model.Itens.Any())
+    {
+        <div class="cart-empty">
+            <div class="empty-icon">🛍️</div>
+            <h2 class="empty-title">Carrinho vazio</h2>
+            <p class="empty-text" style="margin-bottom: 1.5rem;">Explore nossa coleção e adicione peças ao seu carrinho.</p>
+            <a href="/Produto" class="btn btn-primary">Ver Coleção</a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+            <!-- Itens -->
+            <div>
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="cart-item">
+                        <div class="cart-item-thumb">
+                            @switch (item.Categoria)
+                            {
+                                case "Vestidos": <text>👗</text> break;
+                                case "Blusas": <text>👚</text> break;
+                                case "Calças": <text>👖</text> break;
+                                case "Saias": <text>🩱</text> break;
+                                case "Casacos": <text>🧥</text> break;
+                                case "Acessórios": <text>👜</text> break;
+                                case "Calçados": <text>👠</text> break;
+                                default: <text>✦</text> break;
+                            }
+                        </div>
+
+                        <div>
+                            <p class="product-category" style="font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray);">@item.Categoria</p>
+                            <p class="cart-item-name">@item.Nome</p>
+                            <p class="cart-item-price">R$ @item.PrecoUnitario.ToString("N2") × @item.Quantidade = <strong style="color: var(--gold);">R$ @item.Subtotal.ToString("N2")</strong></p>
+
+                            <form asp-controller="Carrinho" asp-action="AtualizarQuantidade" method="post" class="qty-control">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                                <button type="submit" name="quantidade" value="@(item.Quantidade - 1)" class="qty-btn">−</button>
+                                <input type="number" name="quantidade" value="@item.Quantidade" min="0" class="qty-input" onchange="this.form.submit()" />
+                                <button type="submit" name="quantidade" value="@(item.Quantidade + 1)" class="qty-btn">+</button>
+                            </form>
+                        </div>
+
+                        <form asp-controller="Carrinho" asp-action="Remover" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="produtoId" value="@item.ProdutoId" />
+                            <button type="submit" class="btn btn-danger btn-sm" title="Remover">✕</button>
+                        </form>
+                    </div>
+                }
+
+                <form asp-controller="Carrinho" asp-action="Limpar" method="post" style="margin-top: 1rem;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('Limpar todo o carrinho?')">
+                        Limpar Carrinho
+                    </button>
+                </form>
+            </div>
+
+            <!-- Resumo -->
+            <div class="cart-summary">
+                <h2 class="summary-title">Resumo do Pedido</h2>
+
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="summary-row">
+                        <span>@item.Nome (×@item.Quantidade)</span>
+                        <span>R$ @item.Subtotal.ToString("N2")</span>
+                    </div>
+                }
+
+                <div class="summary-row">
+                    <span>Frete</span>
+                    <span style="color: var(--success);">Grátis</span>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>R$ @Model.Total.ToString("N2")</span>
+                </div>
+
+                <button class="btn btn-gold" style="width: 100%; margin-top: 1.5rem;" onclick="alert('Funcionalidade de checkout em desenvolvimento!')">
+                    Finalizar Compra
+                </button>
+
+                <a href="/Produto" class="btn btn-outline" style="width: 100%; margin-top: 0.75rem; text-align: center; display: block;">
+                    Continuar Comprando
+                </a>
+            </div>
+        </div>
+    }
+</div>

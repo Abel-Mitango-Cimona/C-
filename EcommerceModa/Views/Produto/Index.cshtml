@@ -1,0 +1,99 @@
+@model IEnumerable<EcommerceModa.Models.Produto>
+@{
+    ViewData["Title"] = "Coleção";
+}
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success" style="margin: 1rem 3rem 0;">@TempData["Sucesso"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-error" style="margin: 1rem 3rem 0;">@TempData["Erro"]</div>
+}
+
+<section class="products-section">
+    <div class="products-header">
+        <div>
+            <span class="section-tag" style="display:block; margin-bottom:0.25rem;">VELOUR</span>
+            <h1 class="section-title" style="font-size: 2rem;">Coleção Completa</h1>
+        </div>
+        <span class="products-count">@Model.Count() peça(s)</span>
+    </div>
+
+    <!-- Filtros -->
+    <div style="margin-bottom: 2rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+        <form method="get" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%;">
+            <input type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar produto..." class="form-control" style="max-width: 280px;" />
+            <select name="categoria" class="form-control" style="max-width: 200px;">
+                <option value="">Todas as categorias</option>
+                @foreach (var cat in (string[])ViewBag.Categorias)
+                {
+                    <option value="@cat" selected="@(ViewBag.CategoriaAtual == cat ? "selected" : null)">@cat</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+            @if (!string.IsNullOrEmpty(ViewBag.CategoriaAtual) || !string.IsNullOrEmpty(ViewBag.Busca))
+            {
+                <a href="/Produto" class="btn btn-outline btn-sm">Limpar</a>
+            }
+        </form>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h2 class="empty-title">Nenhum produto encontrado</h2>
+            <p class="empty-text">Tente ajustar os filtros ou cadastre um novo produto.</p>
+            <a href="/Produto/Create" class="btn btn-primary">Cadastrar Produto</a>
+        </div>
+    }
+    else
+    {
+        <div class="products-grid">
+            @foreach (var produto in Model)
+            {
+                <div class="product-card">
+                    <div class="product-image">
+                        <span class="product-image-icon">
+                            @switch (produto.Categoria)
+                            {
+                                case "Vestidos": <text>👗</text> break;
+                                case "Blusas": <text>👚</text> break;
+                                case "Calças": <text>👖</text> break;
+                                case "Saias": <text>🩱</text> break;
+                                case "Casacos": <text>🧥</text> break;
+                                case "Acessórios": <text>👜</text> break;
+                                case "Calçados": <text>👠</text> break;
+                                case "Moda Praia": <text>👙</text> break;
+                                default: <text>✦</text> break;
+                            }
+                        </span>
+                        @if (produto.Estoque == 0)
+                        {
+                            <span class="product-badge" style="background: var(--warm-gray);">Esgotado</span>
+                        }
+                        else if (produto.Estoque <= 5)
+                        {
+                            <span class="product-badge" style="background: #e67e22;">Últimas peças</span>
+                        }
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">@produto.Categoria</p>
+                        <h3 class="product-name">@produto.Nome</h3>
+                        <p class="product-price">R$ @produto.Preco.ToString("N2")</p>
+                        <p class="product-stock @(produto.Estoque == 0 ? "out" : produto.Estoque <= 5 ? "low" : "")">
+                            @(produto.Estoque == 0 ? "Fora de estoque" : $"{produto.Estoque} em estoque")
+                        </p>
+                        <div class="product-actions">
+                            <a href="/Produto/Details/@produto.Id" class="btn btn-outline btn-sm">Detalhes</a>
+                            <a href="/Produto/Edit/@produto.Id" class="btn btn-sm" style="background: var(--cream); border: 1px solid rgba(0,0,0,0.1);">Editar</a>
+                            <a href="/Produto/Delete/@produto.Id" class="btn btn-danger btn-sm">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>
